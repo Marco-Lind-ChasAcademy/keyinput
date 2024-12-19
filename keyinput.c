@@ -1,3 +1,6 @@
+// Replace all puts() with game logic
+// Use pthreads_create() is you prefer, otherwise threadInit(), which is a wrapper with standard initialization and error handling
+
 #include "keyinput.h"
 
 bool isRunning = true;
@@ -13,9 +16,11 @@ bool lshift_is_pressed = false;
 pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t cv = PTHREAD_COND_INITIALIZER;
 
+int freq_ms = 50; // Edit this for update frequency
+
 void *keyInput(void *arg) {
     while (isRunning) {
-        Sleep(50);
+        Sleep(freq_ms);
         pthread_mutex_lock(&mtx);
         if (GetAsyncKeyState('W')) {
             w_is_pressed = true;
@@ -39,17 +44,17 @@ void *keyInput(void *arg) {
         }
         if (GetAsyncKeyState(' ')) {
             space_is_pressed = true;
-            Sleep(50); // Just for console cleanliness - remove for real game
+            Sleep(100 - freq_ms); // Just for console cleanliness - remove for real game
         } else {
             space_is_pressed = false;
         }
         if (GetAsyncKeyState('C')) {
             if (!c_is_toggled) {
                 c_is_toggled = true;
-                Sleep(50);
+                Sleep(200 - freq_ms);
             } else if (c_is_toggled) {
                 c_is_toggled = false;
-                Sleep(50);
+                Sleep(200 - freq_ms);
             }
         }
         if (GetAsyncKeyState(VK_LSHIFT)) {
@@ -63,7 +68,7 @@ void *keyInput(void *arg) {
             c_is_toggled = false;
         } 
         
-        pthread_cond_broadcast(&cv);
+        pthread_cond_signal(&cv);
         pthread_mutex_unlock(&mtx);
     }
     return NULL;

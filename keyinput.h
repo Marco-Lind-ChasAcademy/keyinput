@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <windows.h>
 #include <pthread.h>
+#include <errno.h>
 
 #define false 0
 #define true 1
@@ -22,6 +23,8 @@ extern bool lshift_is_pressed;
 
 extern pthread_mutex_t mtx;
 extern pthread_cond_t cv;
+
+extern int freq_ms;
 
 void *keyInput(void *arg);
 void *actions(void *arg);
