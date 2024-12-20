@@ -8,8 +8,8 @@ int main() {
     pthread_join(t_key, NULL);
     pthread_join(t_act, NULL);
 
-    pthread_mutex_destroy(mtx);
-    pthread_cond_destroy(cv);
+    pthread_mutex_destroy(&mtx_keyinput);
+    pthread_cond_destroy(&cv_keyinput);
     
     return 0;
 }

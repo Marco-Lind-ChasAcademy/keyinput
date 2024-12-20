@@ -21,8 +21,8 @@ extern bool space_is_pressed;
 extern bool c_is_pressed;
 extern bool lshift_is_pressed;
 
-extern pthread_mutex_t mtx;
-extern pthread_cond_t cv;
+extern pthread_mutex_t mtx_keyinput;
+extern pthread_cond_t cv_keyinput;
 
 extern int freq_ms;
 

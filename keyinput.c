@@ -13,15 +13,15 @@ bool space_is_pressed = false;
 bool c_is_toggled = false;
 bool lshift_is_pressed = false;
 
-pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
-pthread_cond_t cv = PTHREAD_COND_INITIALIZER;
+pthread_mutex_t mtx_keyinput = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t cv_keyinput = PTHREAD_COND_INITIALIZER;
 
 int freq_ms = 50; // Edit this for update frequency
 
 void *keyInput(void *arg) {
     while (isRunning) {
         Sleep(freq_ms);
-        pthread_mutex_lock(&mtx);
+        pthread_mutex_lock(&mtx_keyinput);
         if (GetAsyncKeyState('W')) {
             w_is_pressed = true;
         } else {
@@ -68,8 +68,8 @@ void *keyInput(void *arg) {
             c_is_toggled = false;
         } 
         
-        pthread_cond_signal(&cv);
-        pthread_mutex_unlock(&mtx);
+        pthread_cond_signal(&cv_keyinput);
+        pthread_mutex_unlock(&mtx_keyinput);
     }
     return NULL;
 }
@@ -77,8 +77,8 @@ void *keyInput(void *arg) {
 void *actions(void *arg) {
     while (isRunning) {
 
-        pthread_mutex_lock(&mtx);
-        pthread_cond_wait(&cv, &mtx);
+        pthread_mutex_lock(&mtx_keyinput);
+        pthread_cond_wait(&cv_keyinput, &mtx_keyinput);
         
         // Walking/Running/Sneaking
         if (w_is_pressed && a_is_pressed && s_is_pressed && d_is_pressed && lshift_is_pressed && c_is_toggled) {
@@ -251,7 +251,7 @@ void *actions(void *arg) {
             isRunning = false;
         }
 
-        pthread_mutex_unlock(&mtx);
+        pthread_mutex_unlock(&mtx_keyinput);
     }
     return NULL;
 }
